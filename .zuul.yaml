@@ -49,18 +49,6 @@
       github.com:
         check: failure
 
-- job:
-    name: base
-    parent: null
-    description: Base job that all other jobs inherit from.
-    roles:
-      - zuul: alexander-scott-org/zuul-trusted
-    timeout: 900
-    nodeset:
-      nodes:
-        - name: controller
-          label: ubuntu-noble
-
 - project:
     check:
       jobs:
