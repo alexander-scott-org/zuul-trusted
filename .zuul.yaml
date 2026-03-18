@@ -1,0 +1,70 @@
+- pipeline:
+    name: check
+    description: |
+      Runs on every proposed change. A +1 vote is required before merge.
+    manager: independent
+    trigger:
+      github.com:
+        - event: pull_request
+          action:
+            - opened
+            - changed
+            - reopened
+    start:
+      github.com:
+        check: in_progress
+    success:
+      github.com:
+        check: success
+        comment: false
+    failure:
+      github.com:
+        check: failure
+
+- pipeline:
+    name: gate
+    description: |
+      Runs on approved changes before they are merged.
+    manager: dependent
+    require:
+      github.com:
+        review:
+          - type: approved
+    trigger:
+      github.com:
+        - event: pull_request_review
+          action: submitted
+          state: approved
+        - event: pull_request
+          action: status
+          status: success
+    start:
+      github.com:
+        check: in_progress
+    success:
+      github.com:
+        check: success
+        merge: true
+    failure:
+      github.com:
+        check: failure
+
+- job:
+    name: base
+    parent: null
+    description: Base job that all other jobs inherit from.
+    pre-run: playbooks/base/pre.yaml
+    post-run: playbooks/base/post.yaml
+    roles:
+      - zuul: alexander-scott-org/zuul-trusted
+    timeout: 1800
+    nodeset:
+      nodes:
+        - name: controller
+          label: ubuntu-noble
+
+- job:
+    name: my-test-job
+    parent: base
+    description: Run tests for my project.
+    run: playbooks/my-test-job/run.yaml
