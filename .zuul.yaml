@@ -57,7 +57,7 @@
     post-run: playbooks/base/post.yaml
     roles:
       - zuul: alexander-scott-org/zuul-trusted
-    timeout: 1800
+    timeout: 900
     nodeset:
       nodes:
         - name: controller
