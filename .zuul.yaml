@@ -68,3 +68,12 @@
     parent: base
     description: Run tests for my project.
     run: playbooks/my-test-job/run.yaml
+
+# .zuul.yaml in your project repo
+- project:
+    check:
+      jobs:
+        - my-test-job
+    gate:
+      jobs:
+        - my-test-job
